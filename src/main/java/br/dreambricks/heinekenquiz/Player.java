@@ -3,7 +3,6 @@ package br.dreambricks.heinekenquiz;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.OffsetDateTime;
 import java.util.Date;
 
 @Document(collection = "players")

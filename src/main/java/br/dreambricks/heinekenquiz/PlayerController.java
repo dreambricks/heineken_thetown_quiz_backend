@@ -31,13 +31,15 @@ public class PlayerController {
     @Autowired
     PlayerService playerService;
 
+    @Autowired
+    private PlayerRepository playerRepository;  // Assuming you have a repository for Player objects
+
     @GetMapping
-    public List<Player> getAllProducts() {
+    public List<Player> getAllPlayers() {
         return this.playerService.getAll();
     }
 
-    @Autowired
-    private PlayerRepository playerRepository;  // Assuming you have a repository for Player objects
+
 
     @PostMapping("/upload")
     public String uploadFile(@RequestParam("file") MultipartFile file,
