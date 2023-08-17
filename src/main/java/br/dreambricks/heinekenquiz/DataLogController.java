@@ -23,7 +23,7 @@ public class DataLogController {
     DataLogRepository dataLogRepository;
 
     @PostMapping("/upload")
-    public DataLog uploadFile(@RequestParam("barName") String barName,@RequestParam("hits") String hits,@RequestParam("miss") String miss,@RequestParam("status") String status,@RequestParam("timePlayed") String timePlayed) throws ParseException {
+    public DataLog uploadFile(@RequestParam("barName") String barName,@RequestParam(required = false, value="hits") String hits,@RequestParam(required = false, value="miss") String miss,@RequestParam("status") String status,@RequestParam("timePlayed") String timePlayed) throws ParseException {
         return dataLogService.saveDataLog(barName, hits, miss, status, timePlayed);
     }
 
@@ -45,7 +45,8 @@ public class DataLogController {
             @RequestParam(defaultValue = "asc") String sortDirection,
             @RequestParam(required = false) String barName,
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate,
-            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate) {
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate,
+            @RequestParam(required = false) String status) {
         Sort.Direction direction = Sort.Direction.fromString(sortDirection);
         Pageable pageable = PageRequest.of(page, size, direction, sortBy);
 
@@ -53,8 +54,12 @@ public class DataLogController {
             return dataLogRepository.findByBarNameAndTimePlayedBetween(barName, startDate, endDate, pageable);
         } else if (barName != null) {
             return dataLogRepository.findByBarName(barName, pageable);
+        } else if (status != null && startDate != null && endDate != null) {
+            return dataLogRepository.findByStatusAndTimePlayedBetween(status, startDate, endDate, pageable);
         } else if (startDate != null && endDate != null) {
             return dataLogRepository.findByTimePlayedBetween(startDate, endDate, pageable);
+        } else if (status != null) {
+            return dataLogRepository.findByStatus(status, pageable);
         } else {
             return dataLogRepository.findAll(pageable);
         }

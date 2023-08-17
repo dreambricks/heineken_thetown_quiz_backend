@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class DataLogService {
@@ -24,8 +25,8 @@ public class DataLogService {
         DataLog dataLog = new DataLog();
 
         dataLog.setBarName(barName);
-        dataLog.setHits(hits);
-        dataLog.setMiss(miss);
+        dataLog.setHits(Objects.requireNonNullElse(hits, "0"));
+        dataLog.setMiss(Objects.requireNonNullElse(miss, "0"));
         dataLog.setStatus(status);
 
         String dateString = timePlayed;
