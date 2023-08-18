@@ -26,7 +26,7 @@ public class DataLogController {
     DataLogRepository dataLogRepository;
 
     @PostMapping("/upload")
-    public DataLog uploadFile(@RequestParam("barName") String barName,@RequestParam(required = false, value="hits") String hits,@RequestParam(required = false, value="miss") String miss,@RequestParam("status") String status,@RequestParam("timePlayed") String timePlayed,@RequestParam(required = false, value="latitude") String latitude,@RequestParam(required = false, value="longitude") String longitude) throws ParseException {
+    public DataLog uploadFile(@RequestParam("barName") String barName, @RequestParam(required = false, value = "hits") String hits, @RequestParam(required = false, value = "miss") String miss, @RequestParam("status") String status, @RequestParam("timePlayed") String timePlayed, @RequestParam(required = false, value = "latitude") String latitude, @RequestParam(required = false, value = "longitude") String longitude) throws ParseException {
         return dataLogService.saveDataLog(barName, hits, miss, status, timePlayed, latitude, longitude);
     }
 
@@ -88,4 +88,16 @@ public class DataLogController {
     }
 
 
+    @GetMapping("/status/count")
+    public List<StatusCount> getStatusCountsByBarName(@RequestParam(required = false) String barName,
+                                                      @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate,
+                                                      @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate) {
+        if (barName != null && startDate != null && endDate != null) {
+            return dataLogRepository.countStatusOccurrencesByBarNameAndTimePlayedBetween(barName,startDate,endDate);
+        }else if (barName !=null){
+            return dataLogRepository.countStatusOccurrencesByBarName(barName);
+        }else{
+            return dataLogRepository.countStatusOccurrences();
+        }
+    }
 }
