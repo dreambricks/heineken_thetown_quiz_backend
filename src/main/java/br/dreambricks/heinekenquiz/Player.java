@@ -12,7 +12,7 @@ public class Player {
     String id;
     String nomeBar;
     Date dataCadastro;
-    byte[] fileEncrypted; //filename: nomeBar_yyyyMMdd_HHmmss_hash.enc
+    byte[] fileEncrypted;
 
     String fileName;
 
