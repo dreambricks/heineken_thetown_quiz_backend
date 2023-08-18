@@ -5,6 +5,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.geo.Distance;
+import org.springframework.data.geo.Metrics;
+import org.springframework.data.geo.Point;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,8 +26,8 @@ public class DataLogController {
     DataLogRepository dataLogRepository;
 
     @PostMapping("/upload")
-    public DataLog uploadFile(@RequestParam("barName") String barName,@RequestParam(required = false, value="hits") String hits,@RequestParam(required = false, value="miss") String miss,@RequestParam("status") String status,@RequestParam("timePlayed") String timePlayed) throws ParseException {
-        return dataLogService.saveDataLog(barName, hits, miss, status, timePlayed);
+    public DataLog uploadFile(@RequestParam("barName") String barName,@RequestParam(required = false, value="hits") String hits,@RequestParam(required = false, value="miss") String miss,@RequestParam("status") String status,@RequestParam("timePlayed") String timePlayed,@RequestParam(required = false, value="latitude") String latitude,@RequestParam(required = false, value="longitude") String longitude) throws ParseException {
+        return dataLogService.saveDataLog(barName, hits, miss, status, timePlayed, latitude, longitude);
     }
 
     @GetMapping
@@ -42,7 +45,7 @@ public class DataLogController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "timePlayed") String sortBy,
-            @RequestParam(defaultValue = "asc") String sortDirection,
+            @RequestParam(defaultValue = "desc") String sortDirection,
             @RequestParam(required = false) String barName,
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate,
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate,
@@ -63,6 +66,25 @@ public class DataLogController {
         } else {
             return dataLogRepository.findAll(pageable);
         }
+    }
+
+
+    @GetMapping("/geolocated")
+    public Page<DataLog> getDataLogsByGeolocation(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "timePlayed") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDirection,
+            @RequestParam double latitude,
+            @RequestParam double longitude,
+            @RequestParam(defaultValue = "10") double maxDistance) {
+        Sort.Direction direction = Sort.Direction.fromString(sortDirection);
+        Pageable pageable = PageRequest.of(page, size, direction, sortBy);
+
+        Point location = new Point(longitude, latitude);
+        Distance distance = new Distance(maxDistance, Metrics.KILOMETERS);
+
+        return dataLogRepository.findByLocationNear(location, distance, pageable);
     }
 
 

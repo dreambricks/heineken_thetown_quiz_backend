@@ -1,6 +1,7 @@
 package br.dreambricks.heinekenquiz;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.geo.Point;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
@@ -20,7 +21,7 @@ public class DataLogService {
         return this.dataLogRepository.findAll();
     }
 
-    public DataLog saveDataLog(String barName, String hits, String miss, String status, String timePlayed) throws ParseException {
+    public DataLog saveDataLog(String barName, String hits, String miss, String status, String timePlayed,String latitude,String longitude) throws ParseException {
 
         DataLog dataLog = new DataLog();
 
@@ -28,6 +29,10 @@ public class DataLogService {
         dataLog.setHits(Objects.requireNonNullElse(hits, "0"));
         dataLog.setMiss(Objects.requireNonNullElse(miss, "0"));
         dataLog.setStatus(status);
+        if (latitude != null && longitude != null ) {
+            Point location = new Point(Double.parseDouble(latitude), Double.parseDouble(longitude));
+            dataLog.setLocation(location);
+        }
 
         String dateString = timePlayed;
 

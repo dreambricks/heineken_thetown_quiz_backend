@@ -1,6 +1,8 @@
 package br.dreambricks.heinekenquiz;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.geo.Point;
+import org.springframework.data.mongodb.core.index.GeoSpatialIndexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -20,11 +22,13 @@ public class DataLog {
     String hits;
     String miss;
 
+    Point location;
+
 
     public DataLog() {
     }
 
-    public DataLog(String id, String barName, Date uploadedData, Date timePlayed, String status, String hits, String miss) {
+    public DataLog(String id, String barName, Date uploadedData, Date timePlayed, String status, String hits, String miss, Point location) {
         this.id = id;
         this.barName = barName;
         this.uploadedData = uploadedData;
@@ -32,6 +36,7 @@ public class DataLog {
         this.status = status;
         this.hits = hits;
         this.miss = miss;
+        this.location = location;
     }
 
     public String getId() {
@@ -88,5 +93,13 @@ public class DataLog {
 
     public void setMiss(String miss) {
         this.miss = miss;
+    }
+
+    public Point getLocation() {
+        return location;
+    }
+
+    public void setLocation(Point location) {
+        this.location = location;
     }
 }
