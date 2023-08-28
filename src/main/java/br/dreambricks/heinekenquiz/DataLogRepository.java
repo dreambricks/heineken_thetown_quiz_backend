@@ -6,6 +6,7 @@ import org.springframework.data.geo.Distance;
 import org.springframework.data.geo.Point;
 import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
@@ -43,5 +44,12 @@ public interface DataLogRepository extends MongoRepository<DataLog, String> {
     })
     List<StatusCount> countStatusOccurrencesByBarNameAndTimePlayedBetween(String barName, Date startDate, Date endDate);
 
+    @Query(value = "{'barName': ?0, 'uploadedData': {$ne: null}}", sort = "{'uploadedData': -1}")
+    List<DataLog> findLatestUploadedDataByBarName(String barName);
+
+    @Query(value = "{'uploadedData': {$ne: null}}", sort = "{'uploadedData': -1}")
+    List<DataLog> findLatestUploadedData();
+
+    List<DataLog> findAllByOrderByTimePlayedDesc();
 
 }

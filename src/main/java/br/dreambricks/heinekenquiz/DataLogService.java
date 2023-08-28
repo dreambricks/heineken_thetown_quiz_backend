@@ -2,6 +2,7 @@ package br.dreambricks.heinekenquiz;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.geo.Point;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
@@ -39,10 +40,10 @@ public class DataLogService {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
         Date timePlayedDate = dateFormat.parse(dateString);
-        Calendar calendarPlayedDate = Calendar.getInstance();
-        calendarPlayedDate.setTime(timePlayedDate);
-        calendarPlayedDate.add(Calendar.HOUR_OF_DAY, -3);
-        dataLog.setTimePlayed(calendarPlayedDate.getTime());
+//        Calendar calendarPlayedDate = Calendar.getInstance();
+//        calendarPlayedDate.setTime(timePlayedDate);
+//        calendarPlayedDate.add(Calendar.HOUR_OF_DAY, -3);
+        dataLog.setTimePlayed(timePlayedDate);
 
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.HOUR_OF_DAY, -3);

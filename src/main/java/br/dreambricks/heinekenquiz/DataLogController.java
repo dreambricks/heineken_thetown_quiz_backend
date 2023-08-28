@@ -40,7 +40,7 @@ public class DataLogController {
 
     @GetMapping
     public List<DataLog> getAllDataLog() {
-        return this.dataLogService.getAll();
+        return this.dataLogRepository.findAllByOrderByTimePlayedDesc();
     }
 
     @GetMapping("/{id}")
@@ -159,4 +159,29 @@ public class DataLogController {
                 .contentLength(zipFile.length())
                 .body(resource);
     }
+
+    @GetMapping("/latest-uploaded")
+    public ResponseEntity<Date> getLatestUploadedDataByBarName(@RequestParam String barName) {
+        List<DataLog> dataLog = dataLogRepository.findLatestUploadedDataByBarName(barName);
+        Date mostRecentUploadedData = dataLog.get(0).uploadedData;
+
+        if (mostRecentUploadedData == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(mostRecentUploadedData);
+    }
+
+    @GetMapping("/latest-uploaded-total")
+    public ResponseEntity<Date> getLatestUploadedData() {
+        List<DataLog> dataLog = dataLogRepository.findLatestUploadedData();
+        Date mostRecentUploadedData = dataLog.get(0).uploadedData;
+
+        if (mostRecentUploadedData == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(mostRecentUploadedData);
+    }
+
 }
